@@ -1,0 +1,13 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    caesar (0.3)
+    vigenere (0.1)
+      caesar (>= 0.3)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  caesar
+  vigenere
