@@ -4,6 +4,20 @@ require "bundler/setup"
 require 'caesar'
 require 'vigenere'
 require 'shellwords'
+
+module Decrypt
+ def self.caesar(encoded_key)
+  alphabets = ("a".."z").to_a #+("A".."Z").to_a  # no need for both upper case and lower case, but still adding just for the sake of it.
+  alphabets.each do |i|
+    possible_key = Caesar.encode(i, encoded_key) # have to do each possible key as its not necessary that the possible key is a valid english word
+    cmd=["look", possible_key,].shelljoin
+    if system("#{cmd} > /dev/null 2>&1") && !possible_key.empty?
+      return possible_key
+    end
+  end
+end
+end
+
 encoded_key ="UREXVIFLJ"
 cipher ="ZE VTXVBX LR BRMME CH LKE SOVJH IX IEOXYRFS MQRRYXIWWLHD FAFDOLAQE JGVWOLW. ZE FNECZ
 YFGENBSI WH KSIGK SW HBAV TB QIVD NZH UAOXVR MLDTRY SW OGWUIPG RVINJDL. VT XYS YNHNG
@@ -18,23 +32,7 @@ FVHQWHN WGTRB UFG OHXWVZPWV. PYKEJS WSOL GNI GFYKLDRTX'J ONLHNGOSE HI LKE SGGK
 HBSW TUK VLHBDHSF KQGZIQPEAZ SW COJ VUOSEIWHWV NBC SWTYJV TUK TICMHHCG UJ
 TCGHHLYORX SHYOAAJ ME O ZWZ MBTXYG NG PAXK TVOWW."
 
-
-words = open('/usr/share/dict/words').map { |l| l.split("\n")[0] }
-msgs =[]
-most_matched_till_now = 0
-success =""
-
-def possible_key(encoded_key)
-  alphabets = ("a".."z").to_a #+("A".."Z").to_a  # no need for both upper case and lower case, but still adding just for the sake of it.
-  alphabets.each do |i|
-    possible_key = Caesar.encode(i, encoded_key) # have to do each possible key as its not necessary that the possible key is a valid english word
-    cmd=["look", possible_key,].shelljoin
-    if system("#{cmd} > /dev/null 2>&1") && !possible_key.empty?
-      return possible_key
-    end
-  end
-end
-key = possible_key(encoded_key)
+key = Decrypt.caesar(encoded_key)
 msg = Vigenere.decode(key, cipher)
 
 p msg
