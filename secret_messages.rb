@@ -18,27 +18,24 @@ FVHQWHN WGTRB UFG OHXWVZPWV. PYKEJS WSOL GNI GFYKLDRTX'J ONLHNGOSE HI LKE SGGK
 HBSW TUK VLHBDHSF KQGZIQPEAZ SW COJ VUOSEIWHWV NBC SWTYJV TUK TICMHHCG UJ
 TCGHHLYORX SHYOAAJ ME O ZWZ MBTXYG NG PAXK TVOWW."
 
-alphabets = ("a".."z").to_a+("A".."Z").to_a  # no need for both upper case and lower case, but still adding just for the sake of it.
-words = open('/usr/share/dict/words').map{|l| l.split("\n")[0]}
+
+words = open('/usr/share/dict/words').map { |l| l.split("\n")[0] }
 msgs =[]
 most_matched_till_now = 0
 success =""
-alphabets.each do |i|
-   possible_key = Caesar.encode(i, encoded_key) # have to do each possible key as its not necessary that the possible key is a valid english word
-   cmd=["look",possible_key,].shelljoin
-   p cmd
-  #msg = Vigenere.decode(possible_key, cipher)
-  a =[]
-  #msg.split(" ").each do |word| #looks how many valid/almost valid words are there in the decrypted message
-  #  #cmd=["look",word,].shelljoin
-  #   if words.include? word.downcase     # u will need a word list in "/usr/share/dict/words"
-  #    a << word if word.downcase!= "\n"
-  #  end
-  #end
-  #if most_matched_till_now < a.size
-  #  most_matched_till_now = a.size
-  #  success = msg    #adds the decrypted word with most semi-valid words as the result
-  #end
+
+def possible_key(encoded_key)
+  alphabets = ("a".."z").to_a #+("A".."Z").to_a  # no need for both upper case and lower case, but still adding just for the sake of it.
+  alphabets.each do |i|
+    possible_key = Caesar.encode(i, encoded_key) # have to do each possible key as its not necessary that the possible key is a valid english word
+    cmd=["look", possible_key,].shelljoin
+    if system("#{cmd} > /dev/null 2>&1") && !possible_key.empty?
+      return possible_key
+    end
+  end
 end
-p  success
+key = possible_key(encoded_key)
+msg = Vigenere.decode(key, cipher)
+
+p msg
 
