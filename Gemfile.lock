@@ -1,5 +1,6 @@
 GEM
   remote: http://rubygems.org/
+  remote: http://rubygems.org/
   specs:
     caesar (0.3)
     vigenere (0.1)
